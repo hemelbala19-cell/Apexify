@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Apexify - Wallet</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .container { max-width: 500px; margin: 20px auto; padding: 15px; }
+        .wallet-banner { background: linear-gradient(135deg, #0A192F 0%, #0F766E 100%); color: white; padding: 25px; border-radius: 20px; box-shadow: 0 10px 25px rgba(15, 118, 110, 0.3); margin-bottom: 20px; }
+        .wallet-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+        .cashout-btn { background: #14B8A6; color: white; border: none; padding: 8px 18px; border-radius: 20px; font-weight: bold; cursor: pointer; font-size: 13px; }
+        .sub-balances { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 20px; border-top: 1px solid rgba(255,255,255,0.15); padding-top: 15px; text-align: center; }
+        .sub-val { font-size: 15px; font-weight: bold; margin-top: 4px; }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h2>My Wallet</h2>
+        
+        <div class="wallet-banner">
+            <div class="wallet-row">
+                <div>
+                    <span style="font-size: 12px; opacity: 0.8;">TOTAL ASSETS</span>
+                    <h1 style="margin: 5px 0 0; font-size: 28px;">৳<span id="totalAsset">0.00</span></h1>
+                </div>
+                <button class="cashout-btn" onclick="openCashout()">📤 WITHDRAW</button>
+            </div>
+            
+            <div class="sub-balances">
+                <div>
+                    <span style="font-size: 11px; opacity: 0.7;">MAIN</span>
+                    <div class="sub-val">৳<span id="mainBal">0.00</span></div>
+                </div>
+                <div>
+                    <span style="font-size: 11px; opacity: 0.7;">SALARY</span>
+                    <div class="sub-val">৳0.00</div>
+                </div>
+                <div>
+                    <span style="font-size: 11px; opacity: 0.7;">REFERRAL</span>
+                    <div class="sub-val">৳0.00</div>
+                </div>
+            </div>
+        </div>
+
+        <div style="background: white; padding: 20px; border-radius: 16px; box-shadow: 0 4px 15px rgba(0,0,0,0.05);">
+            <h3>Deposit Funds</h3>
+            <p style="font-size: 13px; color: var(--text-muted);">Add money to your main balance via bKash/Nagad.</p>
+            <input type="number" id="depAmount" placeholder="Amount (e.g. 500)" style="width: 100%; padding: 12px; margin-bottom: 10px; border: 1px solid var(--border-color); border-radius: 8px; box-sizing: border-box;">
+            <button style="width: 100%; background: var(--brand-green); color: white; border: none; padding: 12px; border-radius: 8px; font-weight: bold; cursor: pointer;" onclick="alert('ডিপোজিট রিকোয়েস্ট পাঠানো হয়েছে!')">Submit Deposit Request</button>
+        </div>
+    </div>
+
+    <!-- বটম ন্যাভিগেশন বার -->
+    <div class="bottom-nav">
+        <a href="dashboard.html" class="nav-item">🏠 Home</a>
+        <a href="wallet.html" class="nav-item active">👛 Wallet</a>
+        <a href="server.html" class="nav-center-btn">⚡</a>
+        <a href="server.html" class="nav-item">👑 Server</a>
+        <a href="profile.html" class="nav-item">👤 Profile</a>
+    </div>
+
+    <script>
+        function openCashout() {
+            const amount = prompt("Enter withdrawal amount (Min ৳500):");
+            if(amount) {
+                alert("উইথড্র রিকোয়েস্ট সফলভাবে জমা হয়েছে!");
+            }
+        }
+    </script>
+</body>
+  </html>
+                                                           
