@@ -10,7 +10,7 @@
         
         /* টপ হেডার */
         .dash-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
-        .support-icon, .notif-icon { width: 40px; height: 40px; background: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+        .support-icon, .notif-icon { width: 40px; height: 40px; background: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 8px rgba(0,0,0,0.05); text-decoration: none; }
         .dash-logo { font-size: 20px; font-weight: 800; color: var(--brand-green); display: flex; align-items: center; gap: 6px; }
 
         /* ব্যানার স্লাইডার */
@@ -56,7 +56,8 @@
         <div class="alert-box">
             <div class="alert-title">⚠️ Action Required!</div>
             <div class="alert-desc">আপনার অ্যাকাউন্ট আনঅ্যাক্টিভ, কাজ শুরু করতে এবং উইথড্র পেতে এখনই অ্যাকাউন্টটি একটিভ করুন।</div>
-            <button class="active-btn" onclick="window.location.href='wallet.html'">⚡ ACCOUNT ACTIVE</button>
+            <!-- একাউন্ট এক্টিভ বাটনে ক্লিক করলে সরাসরি activate.html পেজে যাবে -->
+            <button class="active-btn" onclick="window.location.href='activate.html'">⚡ ACCOUNT ACTIVE</button>
         </div>
 
         <!-- টোটাল এসেট কার্ড -->
@@ -83,6 +84,7 @@
         <a href="profile.html" class="nav-item">👤 Profile</a>
     </div>
 
+    <!-- ফায়ারবেস ডেটা কানেকশন স্ক্রিপ্ট -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
