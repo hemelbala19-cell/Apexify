@@ -3,90 +3,55 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Apexify - User Dashboard</title>
+    <title>Apexify - Dashboard</title>
     <link rel="stylesheet" href="style.css">
     <style>
-        .dashboard-container { max-width: 800px; margin: 30px auto; padding: 20px; }
-        .card { background-color: var(--bg-card); border: 1px solid var(--border-color); padding: 25px; border-radius: 12px; margin-bottom: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.3); }
-        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 15px; margin-bottom: 20px; }
-        .stat-card { background-color: var(--bg-card); border: 1px solid var(--border-color); padding: 20px; border-radius: 12px; text-align: center; }
-        .stat-card h4 { margin: 0 0 10px 0; color: #9CA3AF; font-size: 14px; }
-        .stat-card .value { font-size: 22px; font-weight: bold; color: var(--text-main); }
-        .status-inactive { color: var(--accent-yellow); font-weight: bold; }
-        .status-active { color: var(--profit-green); font-weight: bold; }
-        .payment-methods { display: flex; gap: 15px; margin: 15px 0; }
-        .method-box { flex: 1; padding: 12px; border: 1px solid var(--border-color); border-radius: 8px; text-align: center; cursor: pointer; background: var(--bg-main); font-weight: 600; }
-        .method-box.selected { border-color: var(--brand-blue); background: rgba(59, 130, 246, 0.15); color: var(--brand-blue); }
-        .ref-box { display: flex; gap: 10px; margin-top: 10px; }
-        .ref-box input { flex: 1; padding: 10px; background: var(--bg-main); border: 1px solid var(--border-color); color: var(--text-main); border-radius: 6px; }
-        .btn-primary { width: 100%; padding: 10px; background: var(--brand-blue); border: none; color: white; font-weight: bold; border-radius: 6px; cursor: pointer; margin-top: 10px; }
+        .container { max-width: 500px; margin: 15px auto; padding: 15px; }
+        .top-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .brand-title { font-size: 22px; font-weight: bold; color: var(--brand-green); }
+        .alert-box { background: #FEF2F2; border: 1px solid #FCA5A5; padding: 15px; border-radius: 16px; text-align: center; margin-bottom: 20px; }
+        .alert-title { color: #DC2626; font-weight: bold; font-size: 16px; margin-bottom: 5px; }
+        .alert-desc { color: #4B5563; font-size: 12px; margin-bottom: 12px; line-height: 1.4; }
+        .activate-btn { background: #E11D48; color: white; border: none; padding: 10px 20px; border-radius: 25px; font-weight: bold; font-size: 13px; cursor: pointer; }
+        .asset-card { background: linear-gradient(135deg, #0A192F 0%, #0F766E 100%); color: white; padding: 20px; border-radius: 20px; box-shadow: 0 10px 20px rgba(15, 118, 110, 0.2); }
+        .asset-title { font-size: 12px; opacity: 0.8; letter-spacing: 0.5px; }
+        .asset-amount { font-size: 32px; font-weight: bold; margin: 5px 0 15px; }
     </style>
 </head>
 <body>
 
-    <div class="dashboard-container">
-        <!-- ইউজার ইনফো ও স্ট্যাটাস -->
-        <div class="card">
-            <h2>Welcome to Apexify Dashboard</h2>
-            <p>Email: <span id="userEmail">Loading...</span></p>
-            <p>Account Status: <span id="accountStatus" class="status-inactive">Loading...</span></p>
-            <button id="logoutBtn" style="margin-top: 10px; padding: 6px 12px; background: #EF4444; border: none; color: white; border-radius: 5px; cursor: pointer;">Logout</button>
+    <div class="container">
+        <div class="top-header">
+            <div class="brand-title">📈 Apexify</div>
+            <div id="userGreeting" style="font-size: 13px; font-weight: 600; color: var(--text-muted);">Loading...</div>
         </div>
 
-        <!-- ব্যালেন্স ও স্ট্যাটস কার্ড -->
-        <div class="stats-grid">
-            <div class="stat-card">
-                <h4>Main Balance</h4>
-                <div class="value">৳<span id="userBalance">0.00</span></div>
-            </div>
-            <div class="stat-card">
-                <h4>Available Balance</h4>
-                <div class="value">৳<span id="availableBalance">0.00</span></div>
-            </div>
-            <div class="stat-card">
-                <h4>Qualified Referrals</h4>
-                <div class="value" id="refCount">0</div>
-            </div>
+        <div class="alert-box">
+            <div class="alert-title">⚠️ Action Required!</div>
+            <div class="alert-desc">আপনার অ্যাকাউন্ট ইনঅ্যাক্টিভ, কাজ শুরু করতে এবং উইথড্র পেতে এখনই অ্যাকাউন্টটি একটিভ করুন।</div>
+            <button class="activate-btn" onclick="window.location.href='wallet.html'">⚡ ACCOUNT ACTIVE</button>
         </div>
 
-        <!-- রেফারেল লিংক সেকশন -->
-        <div class="card">
-            <h3>Your Referral Link</h3>
-            <p style="font-size: 13px; color: #9CA3AF;">Share this link. When someone registers and activates their account, it will count!</p>
-            <div class="ref-box">
-                <input type="text" id="refLink" readonly>
-                <button class="btn-primary" onclick="copyRefLink()" style="width: auto; padding: 0 20px; margin-top: 0;">Copy</button>
-            </div>
+        <div class="asset-card">
+            <div class="asset-title">TOTAL ASSET VALUE</div>
+            <div class="asset-amount">৳<span id="dashBalance">0.00</span></div>
+            <div style="font-size: 12px; opacity: 0.7;">Your complete Apexify account summary</div>
         </div>
+    </div>
 
-        <!-- অ্যাক্টিভেশন ও পেমেন্ট সেকশন -->
-        <div class="card" id="activationSection" style="display: none;">
-            <h3>Account Activation Required</h3>
-            <p>To activate your account, please send ৳10 using bKash or Nagad and submit your TrxID below.</p>
-            
-            <label style="font-size: 13px; color: #9CA3AF;">Select Payment Method:</label>
-            <div class="payment-methods">
-                <div class="method-box" onclick="selectMethod('bKash')" id="bkashBtn">bKash (Personal)</div>
-                <div class="method-box" onclick="selectMethod('Nagad')" id="nagadBtn">Nagad (Personal)</div>
-            </div>
-
-            <div id="paymentFormArea" style="display: none; margin-top: 15px;">
-                <p style="background: var(--bg-main); padding: 10px; border-radius: 6px; font-size: 14px;">
-                    Send ৳10 to <strong id="targetNumber" style="color: var(--brand-blue);">01700000000</strong>
-                </p>
-                <div class="input-group">
-                    <label>Transaction ID (TrxID)</label>
-                    <input type="text" id="trxIdInput" placeholder="e.g. 9N74XYZ..." style="width: 100%; padding: 10px; background: var(--bg-main); border: 1px solid var(--border-color); color: var(--text-main); border-radius: 6px; margin-top: 5px;">
-                </div>
-                <button class="btn-primary" id="submitActivation">Submit for Activation</button>
-            </div>
-        </div>
+    <!-- বটম ন্যাভিগেশন বার -->
+    <div class="bottom-nav">
+        <a href="dashboard.html" class="nav-item active">🏠 Home</a>
+        <a href="wallet.html" class="nav-item">👛 Wallet</a>
+        <a href="server.html" class="nav-center-btn">⚡</a>
+        <a href="server.html" class="nav-item">👑 Server</a>
+        <a href="profile.html" class="nav-item">👤 Profile</a>
     </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-        import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+        import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
         const firebaseConfig = {
           apiKey: "AIzaSyDsgQJgZ64-ARLqKa3vcdQpu_xVupD90W4",
@@ -104,89 +69,15 @@
 
         onAuthStateChanged(auth, async (user) => {
             if (user) {
-                document.getElementById("userEmail").innerText = user.email;
-                
-                const refUrl = `${window.location.origin}/index.html?ref=${user.uid}`;
-                document.getElementById("refLink").value = refUrl;
-
-                const userDocRef = doc(db, "users", user.uid);
-                const userSnap = await getDoc(userDocRef);
-
-                if (userSnap.exists()) {
-                    const userData = userSnap.data();
-                    document.getElementById("userBalance").innerText = userData.balance || 0;
-                    document.getElementById("availableBalance").innerText = userData.availableBalance || 0;
-                    document.getElementById("refCount").innerText = userData.qualifiedReferrals || 0;
-                    
-                    const statusSpan = document.getElementById("accountStatus");
-                    if (userData.accountStatus === "Active") {
-                        statusSpan.innerText = "Active";
-                        statusSpan.className = "status-active";
-                        document.getElementById("activationSection").style.display = "none";
-                    } else {
-                        statusSpan.innerText = "Inactive";
-                        statusSpan.className = "status-inactive";
-                        document.getElementById("activationSection").style.display = "block";
-                    }
+                document.getElementById("userGreeting").innerText = "Hi, " + user.email.split('@')[0];
+                const docRef = doc(db, "users", user.uid);
+                const docSnap = await getDoc(docRef);
+                if (docSnap.exists()) {
+                    const data = docSnap.data();
+                    document.getElementById("dashBalance").innerText = (data.balance || 0).toFixed(2);
                 }
             } else {
                 window.location.href = "index.html";
-            }
-        });
-
-        document.getElementById("logoutBtn").addEventListener("click", () => {
-            signOut(auth).then(() => {
-                window.location.href = "index.html";
-            });
-        });
-
-        let chosenMethod = "";
-        window.selectMethod = function(method) {
-            chosenMethod = method;
-            document.getElementById("bkashBtn").classList.remove("selected");
-            document.getElementById("nagadBtn").classList.remove("selected");
-
-            if(method === 'bKash') {
-                document.getElementById("bkashBtn").classList.add("selected");
-                document.getElementById("targetNumber").innerText = "01711111111 (bKash Personal)";
-            } else {
-                document.getElementById("nagadBtn").classList.add("selected");
-                document.getElementById("targetNumber").innerText = "01822222222 (Nagad Personal)";
-            }
-            document.getElementById("paymentFormArea").style.display = "block";
-        }
-
-        window.copyRefLink = function() {
-            const refInput = document.getElementById("refLink");
-            refInput.select();
-            document.execCommand("copy");
-            alert("রেফারেল লিংক কপি করা হয়েছে!");
-        }
-
-        document.getElementById("submitActivation").addEventListener("click", async () => {
-            const trxId = document.getElementById("trxIdInput").value.trim();
-            if(!trxId) {
-                alert("দয়া করে ট্রানজেকশন আইডি (TrxID) লিখুন!");
-                return;
-            }
-
-            const user = auth.currentUser;
-            if(user) {
-                try {
-                    await setDoc(doc(db, "activations", user.uid), {
-                        uid: user.uid,
-                        email: user.email,
-                        method: chosenMethod,
-                        trxId: trxId,
-                        amount: 10,
-                        status: "Pending",
-                        createdAt: new Date().toISOString()
-                    });
-                    alert("অ্যাক্টিভেশন রিকোয়েস্ট সফলভাবে জমা হয়েছে!");
-                    document.getElementById("trxIdInput").value = "";
-                } catch(error) {
-                    alert("ত্রুটি: " + error.message);
-                }
             }
         });
     </script>
