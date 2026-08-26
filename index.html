@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Apexify - Login & Register</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div class="auth-container">
+        <div class="auth-card">
+            <h2 id="form-title">Sign In to <span style="color: var(--brand-blue);">Apexify</span></h2>
+            <p id="form-subtitle">Enter your details to access your dashboard</p>
+
+            <form id="authForm">
+                <div class="input-group">
+                    <label>Email Address</label>
+                    <input type="email" id="email" placeholder="name@example.com" required>
+                </div>
+
+                <div class="input-group">
+                    <label>Password</label>
+                    <input type="password" id="password" placeholder="••••••••" required>
+                </div>
+
+                <button type="submit" id="submit-btn" class="btn-primary">Sign In</button>
+            </form>
+
+            <div class="toggle-link">
+                <p id="switch-text">Don't have an account? <span id="switch-btn">Sign Up</span></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- ফায়ারবেস এবং লজিক ফাইল কানেক্ট করা -->
+    <script type="module" src="app.js"></script>
+</body>
+  </html>
+                      
