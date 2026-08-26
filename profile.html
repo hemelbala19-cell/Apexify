@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Apexify - Profile</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .container { max-width: 500px; margin: 20px auto; padding: 15px; }
+        .profile-card { background: white; padding: 20px; border-radius: 16px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-bottom: 20px; text-align: center; }
+        .avatar { width: 80px; height: 80px; background: #e0f2fe; border-radius: 50%; margin: 0 auto 10px; display: flex; align-items: center; justify-content: center; font-size: 30px; color: var(--brand-green); font-weight: bold; border: 3px solid var(--brand-emerald); }
+        .action-badge { background: #FEE2E2; color: #DC2626; padding: 6px 15px; border-radius: 20px; font-size: 12px; font-weight: bold; display: inline-block; margin-top: 10px; }
+        .menu-list { background: white; border-radius: 16px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-bottom: 20px; }
+        .menu-item { display: flex; align-items: center; justify-content: space-between; padding: 15px 20px; border-bottom: 1px solid var(--border-color); text-decoration: none; color: var(--text-main); font-weight: 600; font-size: 14px; }
+        .menu-item:last-child { border-bottom: none; }
+        .logout-btn { width: 100%; background: #111827; color: white; border: none; padding: 15px; border-radius: 14px; font-weight: bold; font-size: 15px; cursor: pointer; margin-bottom: 30px; }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="profile-card">
+            <div class="avatar" id="userInitial">U</div>
+            <h3 id="userEmailDisplay" style="margin: 5px 0;">Loading...</h3>
+            <p style="color: var(--text-muted); font-size: 13px; margin: 0;">📱 <span id="userPhone">01XXXXXXXXX</span></p>
+            <div class="action-badge">⚠️ ACTION REQUIRED</div>
+        </div>
+
+        <div class="menu-list">
+            <a href="wallet.html" class="menu-item"><span>💰 Wallet & Balances</span> <span>›</span></a>
+            <a href="server.html" class="menu-item"><span>🚀 VIP Server Packages</span> <span>›</span></a>
+            <a href="#" class="menu-item"><span>📊 Withdraw Records</span> <span>›</span></a>
+            <a href="#" class="menu-item"><span>👥 My Network (Referral)</span> <span>›</span></a>
+            <a href="#" class="menu-item"><span>🎧 Customer Service</span> <span>›</span></a>
+        </div>
+
+        <button class="logout-btn" id="logoutBtn">🔒 SECURE LOGOUT</button>
+    </div>
+
+    <!-- বটম ন্যাভিগেশন বার -->
+    <div class="bottom-nav">
+        <a href="dashboard.html" class="nav-item">🏠 Home</a>
+        <a href="wallet.html" class="nav-item">👛 Wallet</a>
+        <a href="server.html" class="nav-center-btn">⚡</a>
+        <a href="server.html" class="nav-item">👑 Server</a>
+        <a href="profile.html" class="nav-item active">👤 Profile</a>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+
+        const firebaseConfig = {
+          apiKey: "AIzaSyDsgQJgZ64-ARLqKa3vcdQpu_xVupD90W4",
+          authDomain: "apexify-72bc2.firebaseapp.com",
+          projectId: "apexify-72bc2",
+          storageBucket: "apexify-72bc2.firebasestorage.app",
+          messagingSenderId: "114061131405",
+          appId: "1:114061131405:web:ffd00b701d70c164976cc4",
+          measurementId: "G-RB6KW4S7JL"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                document.getElementById("userEmailDisplay").innerText = user.email.split('@')[0];
+                document.getElementById("userInitial").innerText = user.email.charAt(0).toUpperCase();
+            } else {
+                window.location.href = "index.html";
+            }
+        });
+
+        document.getElementById("logoutBtn").addEventListener("click", () => {
+            signOut(auth).then(() => { window.location.href = "index.html"; });
+        });
+    </script>
+</body>
+                                                                                                                        </html>
+  
