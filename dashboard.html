@@ -3,87 +3,37 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Apexify - Dashboard</title>
+    <title>Apexify - User Dashboard</title>
     <link rel="stylesheet" href="style.css">
     <style>
-        .dashboard-container {
-            max-width: 800px;
-            margin: 30px auto;
-            padding: 20px;
-        }
-        .welcome-box {
-            background-color: var(--bg-card);
-            border: 1px solid var(--border-color);
-            padding: 25px;
-            border-radius: 12px;
-            margin-bottom: 20px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
-        }
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-            gap: 15px;
-            margin-bottom: 20px;
-        }
-        .stat-card {
-            background-color: var(--bg-card);
-            border: 1px solid var(--border-color);
-            padding: 20px;
-            border-radius: 12px;
-            text-align: center;
-        }
-        .stat-card h4 {
-            margin: 0 0 10px 0;
-            color: #9CA3AF;
-            font-size: 14px;
-        }
-        .stat-card .value {
-            font-size: 22px;
-            font-weight: bold;
-            color: var(--text-main);
-        }
+        .dashboard-container { max-width: 800px; margin: 30px auto; padding: 20px; }
+        .card { background-color: var(--bg-card); border: 1px solid var(--border-color); padding: 25px; border-radius: 12px; margin-bottom: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.3); }
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 15px; margin-bottom: 20px; }
+        .stat-card { background-color: var(--bg-card); border: 1px solid var(--border-color); padding: 20px; border-radius: 12px; text-align: center; }
+        .stat-card h4 { margin: 0 0 10px 0; color: #9CA3AF; font-size: 14px; }
+        .stat-card .value { font-size: 22px; font-weight: bold; color: var(--text-main); }
         .status-inactive { color: var(--accent-yellow); font-weight: bold; }
         .status-active { color: var(--profit-green); font-weight: bold; }
-        
-        .action-card {
-            background-color: var(--bg-card);
-            border: 1px solid var(--border-color);
-            padding: 25px;
-            border-radius: 12px;
-        }
-        .payment-methods {
-            display: flex;
-            gap: 15px;
-            margin: 15px 0;
-        }
-        .method-box {
-            flex: 1;
-            padding: 12px;
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            text-align: center;
-            cursor: pointer;
-            background: var(--bg-main);
-            font-weight: 600;
-        }
-        .method-box.selected {
-            border-color: var(--brand-blue);
-            background: rgba(59, 130, 246, 0.15);
-            color: var(--brand-blue);
-        }
+        .payment-methods { display: flex; gap: 15px; margin: 15px 0; }
+        .method-box { flex: 1; padding: 12px; border: 1px solid var(--border-color); border-radius: 8px; text-align: center; cursor: pointer; background: var(--bg-main); font-weight: 600; }
+        .method-box.selected { border-color: var(--brand-blue); background: rgba(59, 130, 246, 0.15); color: var(--brand-blue); }
+        .ref-box { display: flex; gap: 10px; margin-top: 10px; }
+        .ref-box input { flex: 1; padding: 10px; background: var(--bg-main); border: 1px solid var(--border-color); color: var(--text-main); border-radius: 6px; }
+        .btn-primary { width: 100%; padding: 10px; background: var(--brand-blue); border: none; color: white; font-weight: bold; border-radius: 6px; cursor: pointer; margin-top: 10px; }
     </style>
 </head>
 <body>
 
     <div class="dashboard-container">
         <!-- ইউজার ইনফো ও স্ট্যাটাস -->
-        <div class="welcome-box">
+        <div class="card">
             <h2>Welcome to Apexify Dashboard</h2>
             <p>Email: <span id="userEmail">Loading...</span></p>
             <p>Account Status: <span id="accountStatus" class="status-inactive">Loading...</span></p>
+            <button id="logoutBtn" style="margin-top: 10px; padding: 6px 12px; background: #EF4444; border: none; color: white; border-radius: 5px; cursor: pointer;">Logout</button>
         </div>
 
-        <!-- ব্যালেন্স ও ইনভেস্টমেন্ট কার্ড -->
+        <!-- ব্যালেন্স ও স্ট্যাটস কার্ড -->
         <div class="stats-grid">
             <div class="stat-card">
                 <h4>Main Balance</h4>
@@ -93,12 +43,26 @@
                 <h4>Available Balance</h4>
                 <div class="value">৳<span id="availableBalance">0.00</span></div>
             </div>
+            <div class="stat-card">
+                <h4>Qualified Referrals</h4>
+                <div class="value" id="refCount">0</div>
+            </div>
         </div>
 
-        <!-- অ্যাক্টিভেশন ও পেমেন্ট সেকশন (ধাপ ৩) -->
-        <div class="action-card" id="activationSection" style="display: none;">
+        <!-- রেফারেল লিংক সেকশন -->
+        <div class="card">
+            <h3>Your Referral Link</h3>
+            <p style="font-size: 13px; color: #9CA3AF;">Share this link. When someone registers and activates their account, it will count!</p>
+            <div class="ref-box">
+                <input type="text" id="refLink" readonly>
+                <button class="btn-primary" onclick="copyRefLink()" style="width: auto; padding: 0 20px; margin-top: 0;">Copy</button>
+            </div>
+        </div>
+
+        <!-- অ্যাক্টিভেশন ও পেমেন্ট সেকশন -->
+        <div class="card" id="activationSection" style="display: none;">
             <h3>Account Activation Required</h3>
-            <p>Your account is currently <strong>Inactive</strong>. To activate, please send ৳10 using bKash or Nagad and submit your Transaction ID (TrxID) below.</p>
+            <p>To activate your account, please send ৳10 using bKash or Nagad and submit your TrxID below.</p>
             
             <label style="font-size: 13px; color: #9CA3AF;">Select Payment Method:</label>
             <div class="payment-methods">
@@ -112,18 +76,17 @@
                 </p>
                 <div class="input-group">
                     <label>Transaction ID (TrxID)</label>
-                    <input type="text" id="trxIdInput" placeholder="e.g. 9N74XYZ...">
+                    <input type="text" id="trxIdInput" placeholder="e.g. 9N74XYZ..." style="width: 100%; padding: 10px; background: var(--bg-main); border: 1px solid var(--border-color); color: var(--text-main); border-radius: 6px; margin-top: 5px;">
                 </div>
                 <button class="btn-primary" id="submitActivation">Submit for Activation</button>
             </div>
         </div>
     </div>
 
-    <!-- ফায়ারবেস লজিক সংযোগ -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-        import { getFirestore, doc, getDoc, setDoc, updateDb = updateDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+        import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
         const firebaseConfig = {
           apiKey: "AIzaSyDsgQJgZ64-ARLqKa3vcdQpu_xVupD90W4",
@@ -143,7 +106,9 @@
             if (user) {
                 document.getElementById("userEmail").innerText = user.email;
                 
-                // ডাটাবেস থেকে ইউজারের ডাটা ফেচ করা
+                const refUrl = `${window.location.origin}/index.html?ref=${user.uid}`;
+                document.getElementById("refLink").value = refUrl;
+
                 const userDocRef = doc(db, "users", user.uid);
                 const userSnap = await getDoc(userDocRef);
 
@@ -151,6 +116,7 @@
                     const userData = userSnap.data();
                     document.getElementById("userBalance").innerText = userData.balance || 0;
                     document.getElementById("availableBalance").innerText = userData.availableBalance || 0;
+                    document.getElementById("refCount").innerText = userData.qualifiedReferrals || 0;
                     
                     const statusSpan = document.getElementById("accountStatus");
                     if (userData.accountStatus === "Active") {
@@ -164,9 +130,14 @@
                     }
                 }
             } else {
-                // লগইন না থাকলে ইনডেক্স পেজে রিডাইরেক্ট
                 window.location.href = "index.html";
             }
+        });
+
+        document.getElementById("logoutBtn").addEventListener("click", () => {
+            signOut(auth).then(() => {
+                window.location.href = "index.html";
+            });
         });
 
         let chosenMethod = "";
@@ -177,12 +148,19 @@
 
             if(method === 'bKash') {
                 document.getElementById("bkashBtn").classList.add("selected");
-                document.getElementById("targetNumber").innerText = "01711111111 (bKash Merchant/Personal)";
+                document.getElementById("targetNumber").innerText = "01711111111 (bKash Personal)";
             } else {
                 document.getElementById("nagadBtn").classList.add("selected");
                 document.getElementById("targetNumber").innerText = "01822222222 (Nagad Personal)";
             }
             document.getElementById("paymentFormArea").style.display = "block";
+        }
+
+        window.copyRefLink = function() {
+            const refInput = document.getElementById("refLink");
+            refInput.select();
+            document.execCommand("copy");
+            alert("রেফারেল লিংক কপি করা হয়েছে!");
         }
 
         document.getElementById("submitActivation").addEventListener("click", async () => {
@@ -195,7 +173,6 @@
             const user = auth.currentUser;
             if(user) {
                 try {
-                    // অ্যাক্টিভেশন রিকোয়েস্ট ফায়ারস্টোরে সেভ করা
                     await setDoc(doc(db, "activations", user.uid), {
                         uid: user.uid,
                         email: user.email,
@@ -205,7 +182,7 @@
                         status: "Pending",
                         createdAt: new Date().toISOString()
                     });
-                    alert("অ্যাক্টিভেশন রিকোয়েস্ট সফলভাবে জমা হয়েছে! অ্যাডমিন যাচাই করার পর আপনার অ্যাকাউন্ট সক্রিয় করা হবে।");
+                    alert("অ্যাক্টিভেশন রিকোয়েস্ট সফলভাবে জমা হয়েছে!");
                     document.getElementById("trxIdInput").value = "";
                 } catch(error) {
                     alert("ত্রুটি: " + error.message);
