@@ -3,39 +3,42 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Apexify - Sign In / Sign Up</title>
+    <title>Apexify - Login & Account</title>
     <link rel="stylesheet" href="style.css">
     <style>
-        .auth-container { max-width: 400px; margin: 80px auto; padding: 30px; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 12px; }
-        .input-group { margin-bottom: 15px; }
-        .input-group label { display: block; margin-bottom: 5px; font-size: 14px; color: #9CA3AF; }
-        .input-group input { width: 100%; padding: 10px; background: var(--bg-main); border: 1px solid var(--border-color); color: var(--text-main); border-radius: 6px; }
-        .btn-primary { width: 100%; padding: 10px; background: var(--brand-blue); border: none; color: white; font-weight: bold; border-radius: 6px; cursor: pointer; }
-        .switch-text { text-align: center; margin-top: 15px; font-size: 14px; color: #9CA3AF; }
-        .switch-text span { color: var(--brand-blue); cursor: pointer; font-weight: bold; }
+        .auth-container { max-width: 400px; margin: 40px auto; background: white; padding: 30px; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); }
+        .auth-logo { text-align: center; font-size: 24px; font-weight: bold; color: var(--brand-green); margin-bottom: 20px; }
+        .form-group { margin-bottom: 15px; }
+        .form-group label { display: block; font-size: 13px; font-weight: 600; margin-bottom: 5px; color: var(--text-main); }
+        .form-group input { width: 100%; padding: 12px; border: 1px solid var(--border-color); border-radius: 10px; box-sizing: border-box; font-size: 14px; }
+        .auth-btn { width: 100%; background: var(--brand-green); color: white; border: none; padding: 14px; border-radius: 10px; font-weight: bold; font-size: 15px; cursor: pointer; margin-top: 10px; }
+        .toggle-text { text-align: center; margin-top: 15px; font-size: 13px; color: var(--text-muted); cursor: pointer; }
     </style>
 </head>
 <body>
 
     <div class="auth-container">
-        <h2 id="form-title" style="margin-bottom: 5px;">Sign In to <span style="color: var(--brand-blue);">Apexify</span></h2>
-        <p id="form-subtitle" style="color: #9CA3AF; font-size: 14px; margin-bottom: 20px;">Enter your details to access your dashboard</p>
-        
-        <form id="authForm">
-            <div class="input-group">
-                <label>Email Address</label>
-                <input type="email" id="email" required placeholder="name@example.com">
-            </div>
-            <div class="input-group">
-                <label>Password</label>
-                <input type="password" id="password" required placeholder="••••••••">
-            </div>
-            <button type="submit" class="btn-primary" id="submit-btn">Sign In</button>
-        </form>
+        <div class="auth-logo">📈 Apexify</div>
+        <h2 id="formTitle" style="text-align: center; margin-bottom: 20px;">Create Account</h2>
 
-        <div class="switch-text" id="switch-text">
-            Don't have an account? <span id="switch-btn">Sign Up</span>
+        <div class="form-group" id="nameFieldContainer">
+            <label>Full Name</label>
+            <input type="text" id="fullName" placeholder="Enter your name">
         </div>
+
+        <div class="form-group">
+            <label>Email Address</label>
+            <input type="email" id="email" placeholder="Enter your email">
+        </div>
+
+        <div class="form-group">
+            <label>Password</label>
+            <input type="password" id="password" placeholder="Create password">
+        </div>
+
+        <button class="auth-btn" id="submitBtn">CREATE ACCOUNT</button>
+        
+        <div class="toggle-text" id="toggleMode">Already have an account? Login here</div>
     </div>
 
     <script type="module">
@@ -57,71 +60,41 @@
         const auth = getAuth(app);
         const db = getFirestore(app);
 
-        // ইউআরএল থেকে রেফারেল কোড চেক করা
-        const urlParams = new URLSearchParams(window.location.search);
-        const refId = urlParams.get("ref") || "";
+        let isLogin = false;
 
-        const authForm = document.getElementById("authForm");
-        const emailInput = document.getElementById("email");
-        const passwordInput = document.getElementById("password");
-        const formTitle = document.getElementById("form-title");
-        const formSubtitle = document.getElementById("form-subtitle");
-        const submitBtn = document.getElementById("submit-btn");
-        const switchText = document.getElementById("switch-text");
-        const switchBtn = document.getElementById("switch-btn");
-
-        let isSignUp = false;
-
-        switchBtn.addEventListener("click", () => {
-            isSignUp = !isSignUp;
-            if (isSignUp) {
-                formTitle.innerHTML = `Create Account on <span style="color: var(--brand-blue);">Apexify</span>`;
-                formSubtitle.innerText = "Register to start your journey";
-                submitBtn.innerText = "Sign Up";
-                switchText.innerHTML = `Already have an account? <span id="switch-btn">Sign In</span>`;
-            } else {
-                formTitle.innerHTML = `Sign In to <span style="color: var(--brand-blue);">Apexify</span>`;
-                formSubtitle.innerText = "Enter your details to access your dashboard";
-                submitBtn.innerText = "Sign In";
-                switchText.innerHTML = `Don't have an account? <span id="switch-btn">Sign Up</span>`;
-            }
+        document.getElementById("toggleMode").addEventListener("click", () => {
+            isLogin = !isLogin;
+            document.getElementById("formTitle").innerText = isLogin ? "Login Account" : "Create Account";
+            document.getElementById("submitBtn").innerText = isLogin ? "LOGIN" : "CREATE ACCOUNT";
+            document.getElementById("nameFieldContainer").style.display = isLogin ? "none" : "block";
+            document.getElementById("toggleMode").innerText = isLogin ? "Don't have an account? Register" : "Already have an account? Login here";
         });
 
-        authForm.addEventListener("submit", async (e) => {
-            e.preventDefault();
-            const email = emailInput.value;
-            const password = passwordInput.value;
+        document.getElementById("submitBtn").addEventListener("click", async () => {
+            const email = document.getElementById("email").value;
+            const password = document.getElementById("password").value;
 
             try {
-                if (isSignUp) {
-                    const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-                    const user = userCredential.user;
-
-                    // ডাটাবেসে ইউজার সেভ (রেফারেল আইডি সহ)
-                    await setDoc(doc(db, "users", user.uid), {
-                        uid: user.uid,
-                        email: email,
-                        role: "user",
-                        accountStatus: "Inactive",
-                        balance: 0,
-                        availableBalance: 0,
-                        qualifiedReferrals: 0,
-                        referredBy: refId || null,
-                        createdAt: new Date().toISOString()
-                    });
-
-                    alert("সফলভাবে অ্যাকাউন্ট রেজিস্টার হয়েছে!");
+                if (isLogin) {
+                    await signInWithEmailAndPassword(auth, email, password);
                     window.location.href = "dashboard.html";
                 } else {
-                    await signInWithEmailAndPassword(auth, email, password);
-                    alert("লগইন সফল হয়েছে!");
+                    const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+                    const user = userCredential.user;
+                    
+                    await setDoc(doc(db, "users", user.uid), {
+                        email: user.email,
+                        role: "user",
+                        balance: 0,
+                        createdAt: new Date()
+                    });
+
                     window.location.href = "dashboard.html";
                 }
             } catch (error) {
-                alert("ত্রুটি: " + error.message);
+                alert("Error: " + error.message);
             }
         });
     </script>
 </body>
-    </html>
-    
+</html>
