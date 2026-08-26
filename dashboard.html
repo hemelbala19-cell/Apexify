@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Apexify - User Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .dashboard-container {
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+        }
+        .card {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border-color);
+            padding: 25px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+        }
+        .status-inactive { color: var(--accent-yellow); font-weight: bold; }
+        .status-active { color: var(--profit-green); font-weight: bold; }
+        .payment-methods {
+            display: flex;
+            gap: 15px;
+            margin: 15px 0;
+        }
+        .method-box {
+            flex: 1;
+            padding: 15px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            text-align: center;
+            cursor: pointer;
+            background: var(--bg-main);
+        }
+        .method-box.selected {
+            border-color: var(--brand-blue);
+            background: rgba(59, 130, 246, 0.1);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="dashboard-container">
+        <!-- ইউজার স্ট্যাটাস কার্ড -->
+        <div class="card">
+            <h2>Welcome to Your Dashboard</h2>
+            <p>Account Status: <span id="accountStatus" class="status-inactive">Loading...</span></p>
+            <p>Balance: ৳<span id="userBalance">0</span></p>
+        </div>
+
+        <!-- অ্যাক্টিভেশন ও পেমেন্ট সেকশন -->
+        <div class="card" id="activationCard">
+            <h3>Activate Your Account</h3>
+            <p>To activate your account, please pay ৳10 using bKash or Nagad.</p>
+            
+            <label>Select Payment Method:</label>
+            <div class="payment-methods">
+                <div class="method-box" onclick="selectMethod('bKash')" id="bkashBtn">bKash</div>
+                <div class="method-box" onclick="selectMethod('Nagad')" id="nagadBtn">Nagad</div>
+            </div>
+
+            <div id="paymentDetails" style="display: none; margin-top: 15px;">
+                <p>Send ৳10 to this number: <strong id="adminNumber">01700000000</strong> (Personal)</p>
+                <div class="input-group">
+                    <label>Enter Transaction ID (TrxID)</label>
+                    <input type="text" id="trxId" placeholder="e.g. 9N74XYZ...">
+                </div>
+                <button class="btn-primary" id="submitPayment">Submit for Verification</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let selectedPaymentMethod = "";
+
+        function selectMethod(method) {
+            selectedPaymentMethod = method;
+            document.getElementById('bkashBtn').classList.remove('selected');
+            document.getElementById('nagadBtn').classList.remove('selected');
+            
+            if(method === 'bKash') {
+                document.getElementById('bkashBtn').classList.add('selected');
+                document.getElementById('adminNumber').innerText = "01711111111 (Admin bKash)";
+            } else {
+                document.getElementById('nagadBtn').classList.add('selected');
+                document.getElementById('adminNumber').innerText = "01822222222 (Admin Nagad)";
+            }
+            document.getElementById('paymentDetails').style.display = 'block';
+        }
+    </script>
+</body>
+  </html>
+                      
