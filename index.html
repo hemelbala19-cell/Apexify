@@ -3,77 +3,298 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Apexify - Deposit</title>
-    <link rel="stylesheet" href="style.css">
+    <title>Apexify - Reach The Peak</title>
     <style>
-        .container { max-width: 500px; margin: 20px auto; padding: 15px; }
-        .card { background: white; padding: 20px; border-radius: 16px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-bottom: 20px; }
-        .form-group { margin-bottom: 15px; }
-        .form-group label { display: block; font-size: 13px; font-weight: 600; margin-bottom: 5px; color: var(--text-main); }
-        .form-group input, .form-group select { width: 100%; padding: 12px; border: 1px solid var(--border-color); border-radius: 10px; box-sizing: border-box; font-size: 14px; }
-        .submit-btn { width: 100%; background: var(--brand-green); color: white; border: none; padding: 14px; border-radius: 10px; font-weight: bold; font-size: 15px; cursor: pointer; }
-        .back-link { display: inline-block; margin-bottom: 15px; color: var(--brand-green); text-decoration: none; font-weight: 600; font-size: 14px; }
+        :root {
+            --brand-green: #0F766E;
+            --brand-dark: #0A192F;
+            --bg-main: #F4F7F6;
+            --border-color: #E5E7EB;
+            --text-main: #1F2937;
+            --text-muted: #6B7280;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        body { background-color: var(--bg-main); color: var(--text-main); }
+        
+        .app-container { max-width: 460px; margin: 0 auto; min-height: 100vh; position: relative; background: #FFFFFF; box-shadow: 0 0 25px rgba(0,0,0,0.08); }
+        .page-view { display: none; padding: 20px; min-height: 100vh; padding-bottom: 90px; }
+        .page-view.active { display: block; }
+
+        /* লোগো ও হেডার স্টাইল */
+        .auth-logo-area { text-align: center; margin: 30px 0 20px; }
+        .auth-logo-area img { width: 75px; height: 75px; border-radius: 50%; object-fit: cover; border: 3px solid var(--brand-green); box-shadow: 0 4px 15px rgba(15,118,110,0.2); }
+        .auth-logo-area h1 { font-size: 22px; font-weight: 800; color: var(--brand-dark); margin-top: 8px; }
+        .auth-logo-area p { font-size: 11px; color: var(--text-muted); font-weight: 700; letter-spacing: 1px; }
+
+        /* ফর্ম ইনপুট স্টাইল */
+        .form-group { margin-bottom: 15px; text-align: left; }
+        .form-label { font-size: 12px; font-weight: 700; color: var(--text-muted); margin-bottom: 5px; display: block; }
+        .form-input { width: 100%; padding: 14px; border: 1px solid var(--border-color); border-radius: 14px; font-size: 14px; background: #F9FAFB; outline: none; }
+        .form-input:focus { border-color: var(--brand-green); background: #fff; }
+        .main-btn { width: 100%; background: var(--brand-green); color: white; border: none; padding: 15px; border-radius: 14px; font-weight: 800; font-size: 15px; cursor: pointer; box-shadow: 0 4px 15px rgba(15,118,110,0.3); margin-top: 10px; }
+        .switch-auth { text-align: center; margin-top: 20px; font-size: 13px; color: var(--text-muted); }
+        .switch-auth span { color: var(--brand-green); font-weight: bold; cursor: pointer; }
+
+        /* ড্যাশবোর্ড হেডার */
+        .dash-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+        .icon-btn { width: 40px; height: 40px; background: #F9FAFB; border: 1px solid var(--border-color); border-radius: 50%; display: flex; align-items: center; justify-content: center; text-decoration: none; font-size: 16px; cursor: pointer; }
+        .dash-brand { display: flex; align-items: center; gap: 8px; font-weight: 800; font-size: 18px; color: var(--brand-green); }
+        .dash-brand img { width: 32px; height: 32px; border-radius: 50%; object-fit: cover; }
+
+        /* ব্যানার ও এলার্ট */
+        .banner-box { border-radius: 20px; overflow: hidden; margin-bottom: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.08); background: #111; }
+        .banner-box img { width: 100%; height: 140px; object-fit: cover; opacity: 0.85; display: block; }
+        
+        .alert-box { background: #FFF1F2; border: 1px solid #FECDD3; border-radius: 20px; padding: 20px; text-align: center; margin-bottom: 20px; }
+        .success-box { background: #F0FDF4; border: 1px solid #DCFCE7; border-radius: 20px; padding: 20px; text-align: center; margin-bottom: 20px; color: var(--brand-green); font-weight: 700; font-size: 14px; }
+
+        /* কার্ড ও এসেট */
+        .asset-card { background: linear-gradient(135deg, var(--brand-dark) 0%, var(--brand-green) 100%); color: white; border-radius: 24px; padding: 20px; margin-bottom: 20px; box-shadow: 0 8px 20px rgba(15,118,110,0.25); }
+        .stats-row { display: flex; gap: 10px; margin-bottom: 20px; }
+        .stat-box { background: #F9FAFB; border: 1px solid var(--border-color); border-radius: 18px; padding: 15px 10px; flex: 1; text-align: center; }
+        .stat-box .title { font-size: 10px; font-weight: 800; color: var(--text-muted); margin-bottom: 6px; }
+        .stat-box .val { font-size: 15px; font-weight: 800; }
+
+        /* মেনু লিস্ট */
+        .menu-card { background: #F9FAFB; border: 1px solid var(--border-color); border-radius: 20px; padding: 8px; margin-bottom: 15px; }
+        .menu-row { display: flex; justify-content: space-between; align-items: center; padding: 12px 14px; border-bottom: 1px solid var(--border-color); text-decoration: none; color: var(--text-main); font-weight: 700; font-size: 13px; }
+        .menu-row:last-child { border-bottom: none; }
+
+        /* বটম ন্যাভ */
+        .bottom-nav { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 460px; background: white; display: flex; justify-content: space-around; align-items: center; padding: 10px 0; border-top: 1px solid var(--border-color); z-index: 1000; }
+        .nav-btn { text-decoration: none; color: var(--text-muted); font-size: 11px; font-weight: 700; display: flex; flex-direction: column; align-items: center; gap: 3px; cursor: pointer; }
+        .nav-btn.active { color: var(--brand-green); }
+        .center-fab { width: 48px; height: 48px; background: var(--brand-green); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 20px; margin-top: -18px; box-shadow: 0 4px 12px rgba(15,118,110,0.4); }
+
+        /* পপআপ মডাল */
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 2000; justify-content: center; align-items: flex-end; }
+        .modal-content { background: white; width: 100%; max-width: 460px; border-radius: 28px 28px 0 0; padding: 25px 20px; max-height: 85vh; overflow-y: auto; animation: slideUp 0.3s ease; }
+        @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
     </style>
 </head>
 <body>
 
-    <div class="container">
-        <a href="wallet.html" class="back-link">← Back to Wallet</a>
-        
-        <div class="card">
-            <h2>Deposit Money</h2>
-            <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 20px;">বিকাশ বা নগদ এর মাধ্যমে আপনার মেইন ব্যালেন্সে টাকা অ্যাড করুন।</p>
+<div class="app-container">
 
+    <!-- ১. লগইন পেজ -->
+    <div id="loginPage" class="page-view active">
+        <div class="auth-logo-area">
+            <img src="https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?auto=format&fit=crop&w=150&q=80" alt="Logo">
+            <h1>Apexify</h1>
+            <p>REACH THE PEAK</p>
+        </div>
+        <div style="background: #F9FAFB; border: 1px solid var(--border-color); border-radius: 24px; padding: 20px;">
             <div class="form-group">
-                <label>Payment Method</label>
-                <select id="payMethod">
-                    <option value="bkash">bKash (Personal)</option>
-                    <option value="nagad">Nagad (Personal)</option>
-                </select>
+                <label class="form-label">Phone Number</label>
+                <input type="text" id="loginPhone" class="form-input" placeholder="Enter your phone number">
             </div>
-
             <div class="form-group">
-                <label>Amount (BDT)</label>
-                <input type="number" id="depAmount" placeholder="Enter amount (e.g. 500)">
+                <label class="form-label">Password</label>
+                <input type="password" id="loginPass" class="form-input" placeholder="Enter password">
             </div>
-
-            <div class="form-group">
-                <label>Sender Mobile Number</label>
-                <input type="text" id="senderNum" placeholder="01XXXXXXXXX">
-            </div>
-
-            <div class="form-group">
-                <label>Transaction ID (TrxID)</label>
-                <input type="text" id="trxId" placeholder="Enter TrxID">
-            </div>
-
-            <button class="submit-btn" id="submitDeposit">Submit Deposit</button>
+            <button class="main-btn" onclick="handleLogin()">Login to Account</button>
+            <div class="switch-auth">Don't have an account? <span onclick="showPage('registerPage')">Register</span></div>
         </div>
     </div>
 
-    <!-- বটম ন্যাভিগেশন বার -->
-    <div class="bottom-nav">
-        <a href="dashboard.html" class="nav-item">🏠 Home</a>
-        <a href="wallet.html" class="nav-item active">👛 Wallet</a>
-        <a href="server.html" class="nav-center-btn">⚡</a>
-        <a href="server.html" class="nav-item">👑 Server</a>
-        <a href="profile.html" class="nav-item">👤 Profile</a>
+    <!-- ২. রেজিস্ট্রেশন পেজ -->
+    <div id="registerPage" class="page-view">
+        <div class="auth-logo-area">
+            <img src="https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?auto=format&fit=crop&w=150&q=80" alt="Logo">
+            <h1>Create Apexify</h1>
+            <p>REACH THE PEAK</p>
+        </div>
+        <div style="background: #F9FAFB; border: 1px solid var(--border-color); border-radius: 24px; padding: 20px;">
+            <div class="form-group">
+                <label class="form-label">Full Name</label>
+                <input type="text" id="regName" class="form-input" placeholder="Enter your name">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Phone Number</label>
+                <input type="text" id="regPhone" class="form-input" placeholder="01XXXXXXXXX">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Password</label>
+                <input type="password" id="regPass" class="form-input" placeholder="Create password">
+            </div>
+            <button class="main-btn" onclick="handleRegister()">Register Account</button>
+            <div class="switch-auth">Already have an account? <span onclick="showPage('loginPage')">Login</span></div>
+        </div>
     </div>
 
-    <script>
-        document.getElementById("submitDeposit").addEventListener("click", () => {
-            const amount = document.getElementById("depAmount").value;
-            const trx = document.getElementById("trxId").value;
-            
-            if(!amount || !trx) {
-                alert("দয়া করে অ্যামাউন্ট এবং ট্রানজেকশন আইডি দিন!");
-                return;
-            }
-            
-            alert("আপনার ডিপোজিট রিকোয়েস্ট সফলভাবে সাবমিট হয়েছে। কিছুক্ষণের মধ্যে যাচাই করে ব্যালেন্স যুক্ত করা হবে।");
-            window.location.href = "wallet.html";
-        });
-    </script>
-</body>
-        </html>
+    <!-- ৩. হোম ড্যাশবোর্ড পেজ -->
+    <div id="homePage" class="page-view">
+        <div class="dash-header">
+            <div class="icon-btn" onclick="alert('Support Center')">🎧</div>
+            <div class="dash-brand"><img src="https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?auto=format&fit=crop&w=100&q=80"> Apexify</div>
+            <div class="icon-btn" onclick="alert('Notifications')">🔔</div>
+        </div>
+
+        <div class="banner-box">
+            <img src="https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?auto=format&fit=crop&w=600&q=80">
+        </div>
+
+        <div id="accountStatusAlert">
+            <div class="alert-box">
+                <div style="color: #9F1239; font-weight: 800; font-size: 15px; margin-bottom: 5px;">⚠️ Action Required!</div>
+                <div style="font-size: 12px; color: var(--text-muted); margin-bottom: 12px;">কাজ শুরু করতে এবং উইথড্র পেতে এখনই অ্যাকাউন্টটি একটিভ করুন।</div>
+                <button onclick="showPage('activatePage')" style="background: #E11D48; color: white; border: none; padding: 10px 20px; border-radius: 20px; font-weight: 800; font-size: 12px; cursor: pointer;">⚡ ACCOUNT ACTIVE</button>
+            </div>
+        </div>
+
+        <div class="asset-card">
+            <div style="font-size: 11px; font-weight: 700; opacity: 0.8; margin-bottom: 5px;">TOTAL REVENUE</div>
+            <div style="font-size: 32px; font-weight: 800;">৳<span id="totalRevDisplay">0.00</span></div>
+            <button onclick="openModal('withdrawModal')" style="background: white; color: var(--brand-green); border: none; padding: 8px 18px; border-radius: 15px; font-weight: 800; font-size: 12px; margin-top: 12px; cursor: pointer;">📤 CASHOUT</button>
+        </div>
+
+        <div class="stats-row">
+            <div class="stat-box"><div class="title">MAIN</div><div class="val">৳<span id="mainBalDisplay">0.00</span></div></div>
+            <div class="stat-box"><div class="title">SALARY</div><div class="val">৳0.00</div></div>
+            <div class="stat-box"><div class="title">REFERRAL</div><div class="val">৳0.00</div></div>
+        </div>
+
+        <div class="menu-card">
+            <div class="menu-row" onclick="openModal('depositModal')"><span>💳 Deposit Balance (Add Money)</span><span>›</span></div>
+            <div class="menu-row" onclick="openModal('withdrawModal')"><span>💸 Withdraw Money (Cashout)</span><span>›</span></div>
+        </div>
+    </div>
+
+    <!-- ৪. অ্যাকাউন্ট অ্যাক্টিভেশন পেজ -->
+    <div id="activatePage" class="page-view">
+        <div style="background: #F9FAFB; border: 1px solid var(--border-color); border-radius: 24px; padding: 20px; text-align: center;">
+            <div style="font-size: 20px; font-weight: 800; margin-bottom: 5px;">Account Active</div>
+            <div style="font-size: 12px; color: var(--text-muted); margin-bottom: 15px;">আপনি কি মাধ্যমে payment করতে চান?</div>
+            <div style="display: inline-block; background: #F0FDF4; color: var(--brand-green); font-size: 16px; font-weight: 800; padding: 6px 20px; border-radius: 20px; border: 1px solid #DCFCE7; margin-bottom: 20px;">৳ 150</div>
+
+            <div style="display: flex; gap: 10px; margin-bottom: 15px;">
+                <div id="bKashOpt" onclick="setGateway('bkash')" style="flex:1; background:white; border:2px solid var(--brand-green); border-radius:16px; padding:15px; cursor:pointer;">
+                    <div style="font-weight:800; color:#E2136E;">bKash</div>
+                </div>
+                <div id="nagadOpt" onclick="setGateway('nagad')" style="flex:1; background:white; border:2px solid var(--border-color); border-radius:16px; padding:15px; cursor:pointer;">
+                    <div style="font-weight:800; color:#F15A24;">Nagad</div>
+                </div>
+            </div>
+
+            <div id="gatewayInfoBox" style="background:white; border:1px solid var(--border-color); border-radius:14px; padding:12px; font-size:12px; margin-bottom:15px; text-align:left;">
+                সেন্ট মানি নম্বর: <span id="gatewayNumShow" style="font-weight:bold; user-select:all; background:#E5E7EB; padding:2px 6px; border-radius:4px;">01403594918</span> (৳১৫০)
+            </div>
+
+            <input type="text" id="activationTrx" class="form-input" placeholder="Enter Transaction ID (TrxID)" style="margin-bottom: 12px;">
+            <button class="main-btn" onclick="submitActivation()">Submit Activation</button>
+            <br><br>
+            <button onclick="showPage('homePage')" style="background:none; border:none; color:var(--text-muted); font-weight:bold; cursor:pointer;">← Back to Home</button>
+        </div>
+    </div>
+
+    <!-- ৫. সার্ভার / প্যাকেজ পেজ -->
+    <div id="serverPage" class="page-view">
+        <div style="text-align: center; margin-bottom: 15px;">
+            <h2 style="font-size: 18px; font-weight: 800;">VIP SERVER PLAN</h2>
+            <p style="font-size: 11px; color: var(--text-muted);">প্যাকেজ অ্যাক্টিভ করুন এবং ডেইলি ইনকাম বাড়ান</p>
+        </div>
+
+        <div style="background: #F9FAFB; border: 1px solid var(--border-color); border-radius: 20px; padding: 20px; text-align: center; margin-bottom: 15px;">
+            <div style="font-size: 16px; font-weight: 800;">Ryzen</div>
+            <div style="font-size: 26px; font-weight: 800; color: var(--brand-green); margin: 8px 0;">৳2,500</div>
+            <div style="background: white; border: 1px solid var(--border-color); border-radius: 12px; padding: 10px; margin-bottom: 12px;">
+                <div style="font-size: 10px; color: var(--text-muted); font-weight: 700;">ডেইলি ফিক্সড ইনকাম</div>
+                <div style="font-size: 16px; font-weight: 800; color: var(--brand-green);">৳700.00</div>
+            </div>
+            <button onclick="alert('প্যাকেজ সফলভাবে রিকোয়েস্ট করা হয়েছে!')" class="main-btn" style="margin-top:0;">অ্যাক্টিভ করুন →</button>
+        </div>
+    </div>
+
+    <!-- ৬. ওয়ালেট পেজ -->
+    <div id="walletPage" class="page-view">
+        <div class="asset-card">
+            <div style="font-size: 11px; font-weight: 700; opacity: 0.8;">TOTAL BALANCE</div>
+            <div style="font-size: 30px; font-weight: 800;">৳<span id="walletTotalBal">0.00</span></div>
+            <div style="display: flex; gap: 10px; margin-top: 15px;">
+                <button onclick="openModal('depositModal')" style="flex:1; background:white; color:var(--brand-green); border:none; padding:10px; border-radius:12px; font-weight:bold; cursor:pointer;">Deposit</button>
+                <button onclick="openModal('withdrawModal')" style="flex:1; background:rgba(255,255,255,0.2); color:white; border:none; padding:10px; border-radius:12px; font-weight:bold; cursor:pointer;">Withdraw</button>
+            </div>
+        </div>
+        <div class="menu-card">
+            <div class="menu-row" onclick="alert('Deposit History')"><span>📥 Deposit Records</span><span>›</span></div>
+            <div class="menu-row" onclick="alert('Withdraw History')"><span>📤 Withdraw Records</span><span>›</span></div>
+        </div>
+    </div>
+
+    <!-- ৭. প্রোফাইল পেজ -->
+    <div id="profilePage" class="page-view">
+        <div style="background: #F9FAFB; border: 1px solid var(--border-color); border-radius: 20px; padding: 20px; text-align: center; margin-bottom: 15px;">
+            <div style="width: 70px; height: 70px; background: #E5E7EB; border-radius: 50%; margin: 0 auto 10px; display: flex; align-items: center; justify-content: center; font-size: 30px;">👤</div>
+            <div style="font-size: 16px; font-weight: 800;" id="profileNameShow">Apexify User</div>
+            <div style="font-size: 12px; color: var(--text-muted); margin-bottom: 8px;" id="profilePhoneShow">01403594918</div>
+            <div id="profileBadge" style="display:inline-block; background:#FEE2E2; color:#9F1239; font-size:10px; font-weight:800; padding:3px 10px; border-radius:10px;">ACTION REQUIRED</div>
+        </div>
+
+        <div class="menu-card">
+            <div class="menu-row" onclick="showPage('walletPage')"><span>👛 Wallet & Balances</span><span>›</span></div>
+            <div class="menu-row" onclick="alert('Leaderboard')"><span>🏆 Leaderboard</span><span>›</span></div>
+            <div class="menu-row" onclick="alert('Customer Service')"><span>🎧 Customer Service</span><span>›</span></div>
+            <div class="menu-row" onclick="logoutSystem()" style="color:#DC2626;"><span>⏻ Secure Logout</span><span>›</span></div>
+        </div>
+    </div>
+
+    <!-- বটম ন্যাভ বার -->
+    <div class="bottom-nav" id="bottomNav" style="display: none;">
+        <div class="nav-btn active" id="navHome" onclick="showPage('homePage')">🏠 Home</div>
+        <div class="nav-btn" id="navWallet" onclick="showPage('walletPage')">👛 Wallet</div>
+        <div class="center-fab" onclick="showPage('serverPage')">💼</div>
+        <div class="nav-btn" id="navServer" onclick="showPage('serverPage')">👑 Server</div>
+        <div class="nav-btn" id="navProfile" onclick="showPage('profilePage')">👤 Profile</div>
+    </div>
+
+    <!-- ডিপোজিট মডাল -->
+    <div id="depositModal" class="modal-overlay">
+        <div class="modal-content">
+            <h3 style="margin-bottom: 12px; font-size: 16px;">Deposit Balance</h3>
+            <div class="form-group">
+                <label class="form-label">Amount (BDT)</label>
+                <input type="number" id="depositAmount" class="form-input" placeholder="e.g. 500">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Transaction ID (TrxID)</label>
+                <input type="text" id="depositTrx" class="form-input" placeholder="Enter TrxID">
+            </div>
+            <button class="main-btn" onclick="submitDeposit()">Confirm Deposit</button>
+            <button onclick="closeModal('depositModal')" style="width:100%; background:none; border:none; margin-top:10px; color:var(--text-muted); font-weight:bold; cursor:pointer;">Cancel</button>
+        </div>
+    </div>
+
+    <!-- উইথড্র মডাল -->
+    <div id="withdrawModal" class="modal-overlay">
+        <div class="modal-content">
+            <h3 style="margin-bottom: 12px; font-size: 16px;">Withdraw Money</h3>
+            <div class="form-group">
+                <label class="form-label">Amount (BDT)</label>
+                <input type="number" id="withdrawAmount" class="form-input" placeholder="e.g. 1000">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Your bKash/Nagad Number</label>
+                <input type="text" id="withdrawNum" class="form-input" placeholder="01XXXXXXXXX">
+            </div>
+            <button class="main-btn" onclick="submitWithdraw()">Confirm Withdraw</button>
+            <button onclick="closeModal('withdrawModal')" style="width:100%; background:none; border:none; margin-top:10px; color:var(--text-muted); font-weight:bold; cursor:pointer;">Cancel</button>
+        </div>
+    </div>
+
+</div>
+
+<script>
+    let userState = {
+        name: "Apexify User",
+        phone: "01403594918",
+        balance: 0,
+        active: false
+    };
+
+    function showPage(pageId) {
+        document.querySelectorAll('.page-view').forEach(p => p.classList.remove('active'));
+        document.getElementById(pageId).classList.add('active');
         
+        let nav = document.getElementById('bottomNav');
+        if(pageId === 'loginPage' || pageId === 'registerPage') {
+            
