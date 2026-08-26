@@ -3,19 +3,32 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard - Prime BD</title>
-    <link rel="stylesheet" href="style.css">
+    <title>Dashboard - Apexify</title>
     <style>
-        .dash-container { max-width: 460px; margin: 15px auto; padding: 0 15px; }
+        :root {
+            --brand-green: #0F766E;
+            --brand-dark: #0A192F;
+            --bg-main: #F4F7F6;
+            --border-color: #E5E7EB;
+            --text-main: #1F2937;
+            --text-muted: #6B7280;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        body { background-color: var(--bg-main); color: var(--text-main); }
         
+        .app-container { max-width: 460px; margin: 0 auto; min-height: 100vh; padding-bottom: 90px; position: relative; background: #FFFFFF; box-shadow: 0 0 20px rgba(0,0,0,0.05); }
+        .page-section { display: none; padding: 15px; }
+        .page-section.active-section { display: block; }
+
         /* টপ হেডার */
-        .dash-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
-        .support-icon, .notif-icon { width: 40px; height: 40px; background: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 8px rgba(0,0,0,0.05); text-decoration: none; }
+        .dash-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; padding: 5px 0; }
+        .support-icon, .notif-icon { width: 40px; height: 40px; background: #F9FAFB; border: 1px solid var(--border-color); border-radius: 50%; display: flex; align-items: center; justify-content: center; text-decoration: none; font-size: 18px; }
         .dash-logo { font-size: 20px; font-weight: 800; color: var(--brand-green); display: flex; align-items: center; gap: 6px; }
+        .dash-logo img { width: 28px; height: 28px; border-radius: 50%; object-fit: cover; }
 
         /* ব্যানার স্লাইডার */
         .banner-slider { background: #111; border-radius: 20px; overflow: hidden; margin-bottom: 20px; position: relative; box-shadow: 0 4px 15px rgba(0,0,0,0.08); }
-        .banner-slider img { width: 100%; display: block; height: 160px; object-fit: cover; opacity: 0.85; }
+        .banner-slider img { width: 100%; display: block; height: 150px; object-fit: cover; opacity: 0.85; }
 
         /* অ্যাকশন রিকোয়ার্ড বক্স */
         .alert-box { background: #FFF1F2; border: 1px solid #FECDD3; border-radius: 24px; padding: 25px 20px; text-align: center; margin-bottom: 20px; }
@@ -23,97 +36,225 @@
         .alert-desc { color: #4B5563; font-size: 13px; line-height: 1.5; margin-bottom: 20px; }
         .active-btn { background: #E11D48; color: white; border: none; padding: 12px 28px; border-radius: 30px; font-weight: bold; font-size: 14px; cursor: pointer; box-shadow: 0 4px 12px rgba(225, 29, 72, 0.3); }
 
+        /* সাকসেস নোটিশ বক্স (অ্যাক্টিভ হলে দেখাবে) */
+        .success-box { background: #F0FDF4; border: 1px solid #DCFCE7; border-radius: 24px; padding: 20px; text-align: center; margin-bottom: 20px; color: var(--brand-green); font-weight: 700; font-size: 15px; box-shadow: 0 4px 15px rgba(15,118,110,0.05); }
+
         /* টোটাল এসেট কার্ড */
-        .asset-box { background: linear-gradient(135deg, #0A192F 0%, #0F766E 100%); color: white; border-radius: 24px; padding: 22px; box-shadow: 0 10px 25px rgba(15, 118, 110, 0.25); position: relative; }
+        .asset-box { background: linear-gradient(135deg, var(--brand-dark) 0%, var(--brand-green) 100%); color: white; border-radius: 24px; padding: 22px; box-shadow: 0 10px 25px rgba(15, 118, 110, 0.25); margin-bottom: 20px; }
         .asset-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
         .asset-label { font-size: 11px; font-weight: 700; opacity: 0.8; letter-spacing: 0.5px; }
-        
-        /* কারেন্সি টগল (BDT, USDT, INR) */
         .currency-switch { background: rgba(255, 255, 255, 0.15); border-radius: 20px; padding: 3px; display: flex; gap: 2px; }
         .cur-btn { background: transparent; border: none; color: white; font-size: 11px; font-weight: bold; padding: 4px 10px; border-radius: 15px; cursor: pointer; }
         .cur-btn.active { background: white; color: var(--brand-green); }
-
         .asset-amount { font-size: 34px; font-weight: 800; margin: 8px 0; }
         .asset-sub { font-size: 12px; opacity: 0.75; }
+
+        /* পরিসংখ্যান গ্রিড */
+        .stats-grid { display: flex; gap: 10px; margin-bottom: 20px; }
+        .stat-card { background: #F9FAFB; border-radius: 20px; padding: 18px 12px; flex: 1; text-align: center; border: 1px solid var(--border-color); }
+        .stat-title { font-size: 10px; font-weight: 800; color: var(--text-muted); margin-bottom: 8px; }
+        .stat-value { font-size: 16px; font-weight: 800; color: var(--text-main); }
+
+        /* রেফারেল বক্স ও লিডারবোর্ড */
+        .ref-box { background: #F9FAFB; border-radius: 24px; padding: 20px; border: 1px solid var(--border-color); text-align: center; margin-bottom: 20px; }
+        .ref-input-row { display: flex; align-items: center; background: white; border: 1px solid var(--border-color); border-radius: 14px; padding: 6px 6px 6px 12px; margin-bottom: 12px; }
+        .ref-url { font-size: 12px; color: var(--text-muted); flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; text-align: left; }
+        .copy-btn { background: var(--brand-green); color: white; border: none; padding: 10px 16px; border-radius: 10px; font-weight: bold; font-size: 12px; cursor: pointer; }
+        .ref-promo-badge { display: inline-block; background: #F0FDF4; color: var(--brand-green); border: 1px solid #DCFCE7; padding: 6px 16px; border-radius: 20px; font-size: 12px; font-weight: 700; }
+
+        .leaderboard-card { background: #F9FAFB; border-radius: 24px; padding: 20px; border: 1px solid var(--border-color); margin-bottom: 20px; }
+        .lb-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+        .lb-title { font-size: 15px; font-weight: 800; color: var(--text-main); }
+        .lb-item { display: flex; align-items: center; justify-content: space-between; background: white; border: 1px solid var(--border-color); border-radius: 16px; padding: 12px 15px; margin-bottom: 10px; }
+
+        /* একাউন্ট এক্টিভ পেজ */
+        .activate-card { background: #F9FAFB; border-radius: 28px; padding: 25px 20px; text-align: center; border: 1px solid var(--border-color); margin-bottom: 20px; }
+        .wallet-icon-box { width: 60px; height: 60px; background: #F0FDF4; border-radius: 18px; display: flex; align-items: center; justify-content: center; margin: 0 auto 15px; font-size: 28px; color: var(--brand-green); }
+        .fee-badge { display: inline-block; background: #F0FDF4; color: var(--brand-green); font-size: 18px; font-weight: 800; padding: 8px 24px; border-radius: 30px; margin-bottom: 25px; border: 1px solid #DCFCE7; }
+        .method-grid { display: flex; gap: 15px; justify-content: center; margin-bottom: 20px; }
+        .method-option { flex: 1; background: white; border: 2px solid var(--border-color); border-radius: 20px; padding: 20px 10px; cursor: pointer; text-align: center; }
+        .method-option.selected { border-color: var(--brand-green); background: #F0FDF4; }
+        .pay-activate-btn { width: 100%; background: var(--brand-green); color: white; border: none; padding: 16px; border-radius: 16px; font-weight: bold; font-size: 15px; cursor: pointer; box-shadow: 0 6px 20px rgba(15,118,110,0.3); }
+        
+        /* পেমেন্ট ইন্সট্রাকশন বক্স */
+        .payment-box-instruction { display: none; background: white; border: 1px solid var(--border-color); border-radius: 20px; padding: 15px; margin-top: 15px; text-align: left; }
+        .trx-input { width: 100%; padding: 12px; border: 1px solid var(--border-color); border-radius: 12px; margin-top: 10px; margin-bottom: 10px; font-size: 14px; }
+
+        /* প্রোফাইল পেজ স্টাইল */
+        .profile-top-card { background: #F9FAFB; border: 1px solid var(--border-color); border-radius: 24px; padding: 20px; text-align: center; margin-bottom: 20px; position: relative; }
+        .profile-avatar { width: 80px; height: 80px; background: #E5E7EB; border-radius: 50%; margin: 0 auto 10px; display: flex; align-items: center; justify-content: center; font-size: 35px; border: 3px solid white; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
+        .menu-list { background: #F9FAFB; border: 1px solid var(--border-color); border-radius: 24px; padding: 10px; margin-bottom: 20px; }
+        .menu-item { display: flex; align-items: center; justify-content: space-between; padding: 14px 15px; border-bottom: 1px solid var(--border-color); text-decoration: none; color: var(--text-main); font-weight: 700; font-size: 14px; }
+        .menu-item:last-child { border-bottom: none; }
+
+        /* সার্ভার ও প্যাকেজ পেজ */
+        .package-card { background: #F9FAFB; border: 1px solid var(--border-color); border-radius: 24px; padding: 20px; margin-bottom: 15px; text-align: center; }
+        .package-price { font-size: 32px; font-weight: 800; color: var(--brand-green); margin: 10px 0; }
+        
+        /* বটম ন্যাভ বার */
+        .bottom-nav { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 460px; background: white; display: flex; justify-content: space-around; align-items: center; padding: 10px 0; border-top: 1px solid var(--border-color); z-index: 1000; box-shadow: 0 -4px 15px rgba(0,0,0,0.03); }
+        .nav-item { text-decoration: none; color: var(--text-muted); font-size: 11px; font-weight: 700; display: flex; flex-direction: column; align-items: center; gap: 4px; }
+        .nav-item.active { color: var(--brand-green); }
+        .nav-center-btn { width: 50px; height: 50px; background: var(--brand-green); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 20px; box-shadow: 0 4px 15px rgba(15,118,110,0.4); margin-top: -20px; text-decoration: none; }
     </style>
 </head>
 <body>
 
-    <div class="dash-container">
-        <!-- টপ বার -->
-        <div class="dash-header">
-            <a href="#" class="support-icon">🎧</a>
-            <div class="dash-logo">📈 Prime BD</div>
-            <a href="#" class="notif-icon">🔔</a>
+    <div class="app-container">
+        <!-- টপ হেডার (কমন) -->
+        <div class="dash-header" style="padding: 15px 15px 0 15px;">
+            <a href="#" onclick="openSupport()" class="support-icon">🎧</a>
+            <div class="dash-logo">
+                <img src="https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?auto=format&fit=crop&w=100&q=80" alt="Logo"> 
+                <span>Apexify</span>
+            </div>
+            <a href="#" onclick="openNotif()" class="notif-icon">🔔</a>
         </div>
 
-        <!-- ব্যানার স্লাইডার -->
-        <div class="banner-slider">
-            <img src="https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?auto=format&fit=crop&w=600&q=80" alt="Banner">
-        </div>
+        <!-- ১. হোম ড্যাশবোর্ড সেকশন -->
+        <div id="homeSection" class="page-section active-section">
+            <div class="banner-slider">
+                <img src="https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?auto=format&fit=crop&w=600&q=80" alt="Banner">
+            </div>
 
-        <!-- অ্যাকশন রিকোয়ার্ড বক্স -->
-        <div class="alert-box">
-            <div class="alert-title">⚠️ Action Required!</div>
-            <div class="alert-desc">আপনার অ্যাকাউন্ট আনঅ্যাক্টিভ, কাজ শুরু করতে এবং উইথড্র পেতে এখনই অ্যাকাউন্টটি একটিভ করুন।</div>
-            <!-- একাউন্ট এক্টিভ বাটনে ক্লিক করলে সরাসরি activate.html পেজে যাবে -->
-            <button class="active-btn" onclick="window.location.href='activate.html'">⚡ ACCOUNT ACTIVE</button>
-        </div>
-
-        <!-- টোটাল এসেট কার্ড -->
-        <div class="asset-box">
-            <div class="asset-top">
-                <div class="asset-label">TOTAL ASSET VALUE</div>
-                <div class="currency-switch">
-                    <button class="cur-btn active">BDT</button>
-                    <button class="cur-btn">USDT</button>
-                    <button class="cur-btn">INR</button>
+            <!-- অ্যাকশন রিকোয়ার্ড বক্স অথবা সাকসেস মেসেজ -->
+            <div id="dynamicAlertBox">
+                <div class="alert-box">
+                    <div class="alert-title">⚠️ Action Required!</div>
+                    <div class="alert-desc">আপনার অ্যাকাউন্ট আনঅ্যাক্টিভ, কাজ শুরু করতে এবং উইথড্র পেতে এখনই অ্যাকাউন্টটি একটিভ করুন।</div>
+                    <button class="active-btn" onclick="switchPage('activateSection')">⚡ ACCOUNT ACTIVE</button>
                 </div>
             </div>
-            <div class="asset-amount">৳<span id="dashBalance">0.00</span></div>
-            <div class="asset-sub">Your complete PrimeBD account summary</div>
+
+            <div class="asset-box">
+                <div class="asset-top">
+                    <div class="asset-label">TOTAL ASSET VALUE</div>
+                    <div class="currency-switch">
+                        <button class="cur-btn active">BDT</button>
+                        <button class="cur-btn">USDT</button>
+                        <button class="cur-btn">INR</button>
+                    </div>
+                </div>
+                <div class="asset-amount">৳<span id="dashBalance">0.00</span></div>
+                <div class="asset-sub">Your complete Apexify account summary</div>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-card"><div class="stat-title">AVAILABLE</div><div class="stat-value">৳0.00</div></div>
+                <div class="stat-card"><div class="stat-title">SALARY</div><div class="stat-value">৳0.00</div></div>
+                <div class="stat-card"><div class="stat-title">REFERRAL</div><div class="stat-value">৳0.00</div></div>
+            </div>
+
+            <div class="ref-box">
+                <div class="ref-input-row">
+                    <div class="ref-url" id="referralLinkText">https://apexify.net/ref/PB789456</div>
+                    <button class="copy-btn" onclick="copyRefLink()">📋 COPY</button>
+                </div>
+                <div class="ref-promo-badge">🎁 Get ৳50 Per Active Referral</div>
+            </div>
+
+            <div class="leaderboard-card">
+                <div class="lb-header">
+                    <div class="lb-title">🏆 TOP REFERRERS TODAY</div>
+                    <div style="font-size: 11px; font-weight: 700; color: var(--text-muted);">TOP 3</div>
+                </div>
+                <div class="lb-item">
+                    <div style="font-weight: 800; color: #D97706;">#1</div>
+                    <div style="font-weight: 700; font-size: 13px;">MD Abdu...</div>
+                    <div style="background: #F0FDF4; color: var(--brand-green); font-size: 12px; font-weight: 800; padding: 4px 10px; border-radius: 10px;">2 Refs</div>
+                </div>
+            </div>
         </div>
-    </div>
 
-    <!-- বটম ন্যাভিগেশন বার -->
-    <div class="bottom-nav">
-        <a href="dashboard.html" class="nav-item active">🏠 Home</a>
-        <a href="wallet.html" class="nav-item">👛 Wallet</a>
-        <a href="server.html" class="nav-center-btn">💼</a>
-        <a href="server.html" class="nav-item">👑 Server</a>
-        <a href="profile.html" class="nav-item">👤 Profile</a>
-    </div>
+        <!-- ২. অ্যাকাউন্ট অ্যাক্টিভেশন ও পেমেন্ট পেজ -->
+        <div id="activateSection" class="page-section">
+            <div class="activate-card">
+                <div class="wallet-icon-box">👛</div>
+                <div style="font-size: 22px; font-weight: 800; margin-bottom: 8px;">Account Active</div>
+                <div style="font-size: 13px; color: var(--text-muted); margin-bottom: 20px;">আপনি কিএস মাধ্যমে payment করতে চান?</div>
+                
+                <div class="fee-badge">৳ 150</div>
 
-    <!-- ফায়ারবেস ডেটা কানেকশন স্ক্রিপ্ট -->
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-        import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+                <div class="method-grid">
+                    <div class="method-option selected" id="bkashOpt" onclick="selectMethod('bkash')">
+                        <div style="background: #E2136E; color: white; font-weight: bold; font-size: 12px; width: 45px; height: 45px; border-radius: 10px; display: flex; align-items: center; justify-content: center; margin: 0 auto 8px;">bKash</div>
+                        <div style="font-weight: 700; font-size: 14px;">bKash</div>
+                    </div>
+                    <div class="method-option" id="nagadOpt" onclick="selectMethod('nagad')">
+                        <div style="background: #F15A24; color: white; font-weight: bold; font-size: 12px; width: 45px; height: 45px; border-radius: 10px; display: flex; align-items: center; justify-content: center; margin: 0 auto 8px;">নগদ</div>
+                        <div style="font-weight: 700; font-size: 14px;">Nagad</div>
+                    </div>
+                </div>
 
-        const firebaseConfig = {
-          apiKey: "AIzaSyDsgQJgZ64-ARLqKa3vcdQpu_xVupD90W4",
-          authDomain: "apexify-72bc2.firebaseapp.com",
-          projectId: "apexify-72bc2",
-          storageBucket: "apexify-72bc2.firebasestorage.app",
-          messagingSenderId: "114061131405",
-          appId: "1:114061131405:web:ffd00b701d70c164976cc4",
-          measurementId: "G-RB6KW4S7JL"
-        };
+                <button class="pay-activate-btn" id="payProceedBtn" onclick="showPaymentInstruction()">🔒 Pay & Activate Account</button>
+                
+                <!-- সেন্ড মানি এবং ট্রানজেকশন আইডি বক্স -->
+                <div id="paymentInstructionBox" class="payment-box-instruction">
+                    <div style="font-weight: 800; font-size: 14px; margin-bottom: 6px; color: var(--brand-green);" id="targetNumberTitle">বিকাশ সেন্ড মানি নম্বর: <span id="gatewayNumberShow" style="user-select: all; background: #E5E7EB; padding: 2px 6px; border-radius: 4px;">01403594918</span></div>
+                    <div style="font-size: 12px; color: var(--text-muted); margin-bottom: 10px;">উপরের নাম্বারে ৳১৫০ সেন্ড মানি করে নিচের বক্সে ট্রানজেকশন আইডি (TrxID) দিন।</div>
+                    <input type="text" id="trxIdInput" class="trx-input" placeholder="Enter Transaction ID (TrxID)">
+                    <button class="pay-activate-btn" onclick="submitActivation()">Verify & Submit</button>
+                </div>
 
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-        const db = getFirestore(app);
+                <br>
+                <button onclick="switchPage('homeSection')" style="background: none; border: none; color: var(--text-muted); font-weight: bold; cursor: pointer;">← হোমে ফিরে যান</button>
+            </div>
+        </div>
 
-        onAuthStateChanged(auth, async (user) => {
-            if (user) {
-                const docSnap = await getDoc(doc(db, "users", user.uid));
-                if (docSnap.exists()) {
-                    document.getElementById("dashBalance").innerText = (docSnap.data().balance || 0).toFixed(2);
-                }
-            } else {
-                window.location.href = "index.html";
-            }
-        });
-    </script>
-</body>
-</html>
+        <!-- ৩. ওয়ালেট পেজ -->
+        <div id="walletSection" class="page-section">
+            <div class="asset-box" style="margin-top: 10px;">
+                <div class="asset-label">TOTAL REVENUE</div>
+                <div class="asset-amount">৳0.00</div>
+                <button onclick="alert('ক্যাশআউট রিকোয়েস্ট সাবমিট করা হয়েছে!')" style="background: white; color: var(--brand-green); border: none; padding: 10px 20px; border-radius: 20px; font-weight: bold; cursor: pointer; margin-top: 10px;">📤 CASHOUT</button>
+            </div>
+            <div class="stats-grid">
+                <div class="stat-card"><div class="stat-title">MAIN</div><div class="stat-value">৳0.00</div></div>
+                <div class="stat-card"><div class="stat-title">SALARY</div><div class="stat-value">৳0.00</div></div>
+                <div class="stat-card"><div class="stat-title">REFERRAL</div><div class="stat-value">৳0.00</div></div>
+            </div>
+            <div class="menu-list">
+                <a href="#" onclick="alert('ওয়ালেট ম্যানেজমেন্ট ওভারভিউ')" class="menu-item"><span>👛 Wallet Management</span> <span>›</span></a>
+                <a href="#" onclick="alert('সাপ্তাহিক স্যালারি রিকোয়েস্ট অপশন')" class="menu-item"><span>Fixed Salary</span> <span>›</span></a>
+                <a href="#" onclick="alert('উইথড্র হিস্ট্রি রেকর্ড')" class="menu-item"><span>Withdraw Records</span> <span>›</span></a>
+            </div>
+        </div>
+
+        <!-- ৪. সার্ভার / প্যাকেজ পেজ (অ্যাডমিন কন্ট্রোলড ডিজাইন) -->
+        <div id="serverSection" class="page-section">
+            <div style="text-align: center; margin-bottom: 20px;">
+                <h2 style="font-size: 20px; font-weight: 800; color: var(--brand-dark);">VIP SERVER PLAN</h2>
+                <p style="font-size: 12px; color: var(--text-muted);">ডেইলি ইনকাম বাড়াতে আপনার পছন্দের প্যাকেজটি অ্যাক্টিভ করুন</p>
+            </div>
+
+            <!-- ডাইনামিক প্যাকেজ কার্ড (অ্যাডমিন প্যানেল থেকে কন্ট্রোল হবে) -->
+            <div class="package-card">
+                <div style="font-size: 18px; font-weight: 800; color: var(--text-main);">Ryzen</div>
+                <div class="package-price">৳2,500</div>
+                <div style="font-size: 11px; color: var(--text-muted); background: #E5E7EB; display: inline-block; padding: 2px 10px; border-radius: 10px; margin-bottom: 15px;">এককালীন মূল্য</div>
+                
+                <div style="background: white; border: 1px solid var(--border-color); border-radius: 16px; padding: 12px; margin-bottom: 15px;">
+                    <div style="font-size: 11px; color: var(--text-muted); font-weight: 700;">ডেইলি ফিক্সড ইনকাম</div>
+                    <div style="font-size: 18px; font-weight: 800; color: var(--brand-green);">৳700.00</div>
+                </div>
+
+                <div style="background: #F0FDF4; color: var(--brand-green); font-size: 12px; font-weight: 700; padding: 8px; border-radius: 12px; margin-bottom: 15px; border: 1px solid #DCFCE7;">
+                    📅 প্যাকেজের মেয়াদ: 7 দিন
+                </div>
+
+                <button onclick="alert('Ryzen প্যাকেজটি সফলভাবে রিকোয়েস্ট করা হয়েছে!')" style="width: 100%; background: var(--brand-green); color: white; border: none; padding: 14px; border-radius: 16px; font-weight: bold; cursor: pointer;">অ্যাক্টিভ করুন →</button>
+            </div>
+        </div>
+
+        <!-- ৫. প্রোফাইল পেজ (সবগুলো বাটন ও ফিচারসহ কাস্টমাইজড) -->
+        <div id="profileSection" class="page-section">
+            <div class="profile-top-card">
+                <div class="profile-avatar">👤</div>
+                <div style="font-size: 18px; font-weight: 800;" id="profileUserName">Hemel</div>
+                <div style="font-size: 13px; color: var(--text-muted); margin-bottom: 10px;">📞 01403594918</div>
+                <div style="background: #FEE2E2; color: #9F1239; font-size: 11px; font-weight: 800; display: inline-block; padding: 4px 12px; border-radius: 20px;" id="profileStatusBadge">ACTION REQUIRED</div>
+            </div>
+
+            <div style="display: flex; gap: 10px; margin-bottom: 20px;">
+                <div class="stat-card"><div class="stat-title">ACCOUNT LEVEL</div><div class="stat-value" style="font-size: 13px;">Basic</div></div>
+                <div c
