@@ -1,104 +1,101 @@
-:root {
-  --bg-main: #0B0F19;
-  --bg-card: #111827;
-  --brand-blue: #3B82F6;
-  --profit-green: #10B981;
-  --accent-purple: #8B5CF6;
-  --accent-yellow: #F59E0B;
-  --text-main: #F3F4F6;
-  --border-color: #374151;
-}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Apexify - Login & Account</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .auth-container { max-width: 400px; margin: 40px auto; background: white; padding: 30px; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); }
+        .auth-logo { text-align: center; font-size: 24px; font-weight: bold; color: var(--brand-green); margin-bottom: 20px; }
+        .form-group { margin-bottom: 15px; }
+        .form-group label { display: block; font-size: 13px; font-weight: 600; margin-bottom: 5px; color: var(--text-main); }
+        .form-group input { width: 100%; padding: 12px; border: 1px solid var(--border-color); border-radius: 10px; box-sizing: border-box; font-size: 14px; }
+        .auth-btn { width: 100%; background: var(--brand-green); color: white; border: none; padding: 14px; border-radius: 10px; font-weight: bold; font-size: 15px; cursor: pointer; margin-top: 10px; }
+        .toggle-text { text-align: center; margin-top: 15px; font-size: 13px; color: var(--text-muted); cursor: pointer; }
+    </style>
+</head>
+<body>
 
-body {
-  background-color: var(--bg-main);
-  color: var(--text-main);
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-  margin: 0;
-}
+    <div class="auth-container">
+        <div class="auth-logo">📈 Apexify</div>
+        <h2 id="formTitle" style="text-align: center; margin-bottom: 20px;">Create Account</h2>
 
-.auth-container {
-  width: 100%;
-  max-width: 400px;
-  padding: 20px;
-}
+        <div class="form-group" id="nameFieldContainer">
+            <label>Full Name</label>
+            <input type="text" id="fullName" placeholder="Enter your name">
+        </div>
 
-.auth-card {
-  background-color: var(--bg-card);
-  border: 1px solid var(--border-color);
-  padding: 30px;
-  border-radius: 12px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
-}
+        <div class="form-group">
+            <label>Email Address</label>
+            <input type="email" id="email" placeholder="Enter your email">
+        </div>
 
-.auth-card h2 {
-  margin-bottom: 5px;
-  font-size: 24px;
-}
+        <div class="form-group">
+            <label>Password</label>
+            <input type="password" id="password" placeholder="Create password">
+        </div>
 
-.auth-card p {
-  color: #9CA3AF;
-  font-size: 14px;
-  margin-bottom: 25px;
-}
+        <button class="auth-btn" id="submitBtn">CREATE ACCOUNT</button>
+        
+        <div class="toggle-text" id="toggleMode">Already have an account? Login here</div>
+    </div>
 
-.input-group {
-  margin-bottom: 20px;
-}
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+        import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-.input-group label {
-  display: block;
-  font-size: 13px;
-  margin-bottom: 8px;
-  color: var(--text-main);
-}
+        const firebaseConfig = {
+          apiKey: "AIzaSyDsgQJgZ64-ARLqKa3vcdQpu_xVupD90W4",
+          authDomain: "apexify-72bc2.firebaseapp.com",
+          projectId: "apexify-72bc2",
+          storageBucket: "apexify-72bc2.firebasestorage.app",
+          messagingSenderId: "114061131405",
+          appId: "1:114061131405:web:ffd00b701d70c164976cc4",
+          measurementId: "G-RB6KW4S7JL"
+        };
 
-.input-group input {
-  width: 100%;
-  padding: 12px;
-  background-color: var(--bg-main);
-  border: 1px solid var(--border-color);
-  border-radius: 8px;
-  color: var(--text-main);
-  font-size: 14px;
-  box-sizing: border-box;
-}
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
 
-.input-group input:focus {
-  outline: none;
-  border-color: var(--brand-blue);
-}
+        let isLogin = false;
 
-.btn-primary {
-  width: 100%;
-  padding: 12px;
-  background-color: var(--brand-blue);
-  color: white;
-  border: none;
-  border-radius: 8px;
-  font-size: 16px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: background 0.3s;
-}
+        document.getElementById("toggleMode").addEventListener("click", () => {
+            isLogin = !isLogin;
+            document.getElementById("formTitle").innerText = isLogin ? "Login Account" : "Create Account";
+            document.getElementById("submitBtn").innerText = isLogin ? "LOGIN" : "CREATE ACCOUNT";
+            document.getElementById("nameFieldContainer").style.display = isLogin ? "none" : "block";
+            document.getElementById("toggleMode").innerText = isLogin ? "Don't have an account? Register" : "Already have an account? Login here";
+        });
 
-.btn-primary:hover {
-  background-color: #2563EB;
-}
+        document.getElementById("submitBtn").addEventListener("click", async () => {
+            const email = document.getElementById("email").value;
+            const password = document.getElementById("password").value;
 
-.toggle-link {
-  text-align: center;
-  margin-top: 15px;
-  font-size: 14px;
-  color: #9CA3AF;
-}
+            try {
+                if (isLogin) {
+                    await signInWithEmailAndPassword(auth, email, password);
+                    window.location.href = "dashboard.html";
+                } else {
+                    const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+                    const user = userCredential.user;
+                    
+                    // ফায়ারবেসে ডিফল্ট ইউজার ডাটা সেভ করা (role: user)
+                    await setDoc(doc(db, "users", user.uid), {
+                        email: user.email,
+                        role: "user",
+                        balance: 0,
+                        createdAt: new Date()
+                    });
 
-.toggle-link span {
-  color: var(--brand-blue);
-  cursor: pointer;
-  font-weight: 600;
-  }
-  
+                    window.location.href = "dashboard.html";
+                }
+            } catch (error) {
+                alert("Error: " + error.message);
+            }
+        });
+    </script>
+</body>
+</html>
