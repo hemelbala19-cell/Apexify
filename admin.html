@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Apexify - Admin Panel</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .admin-container { max-width: 1000px; margin: 30px auto; padding: 20px; }
+        .card { background-color: var(--bg-card); border: 1px solid var(--border-color); padding: 25px; border-radius: 12px; margin-bottom: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.3); }
+        table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+        th, td { padding: 12px; text-align: left; border-bottom: 1px solid var(--border-color); font-size: 14px; }
+        th { color: #9CA3AF; }
+        .btn-approve { background: var(--profit-green); color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-weight: bold; }
+        .btn-approve:hover { opacity: 0.9; }
+        .settings-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 15px; }
+    </style>
+</head>
+<body>
+
+    <div class="admin-container">
+        <div class="card">
+            <h2>Apexify Admin Control Panel</h2>
+            <p>Welcome, Admin. Manage user activations, payments, and system settings from here.</p>
+            <button id="adminLogout" style="margin-top: 10px; padding: 6px 12px; background: #EF4444; border: none; color: white; border-radius: 5px; cursor: pointer;">Admin Logout</button>
+        </div>
+
+        <!-- পেমেন্ট নম্বর কন্ট্রোল সেকশন -->
+        <div class="card">
+            <h3>Payment Numbers Settings</h3>
+            <p style="font-size: 13px; color: #9CA3AF;">Update bKash and Nagad numbers shown to users on their activation page.</p>
+            <div class="settings-grid">
+                <div class="input-group">
+                    <label>bKash Number</label>
+                    <input type="text" id="bkashNumInput" placeholder="017xxxxxxxx" style="width: 100%; padding: 10px; background: var(--bg-main); border: 1px solid var(--border-color); color: var(--text-main); border-radius: 6px; margin-top: 5px;">
+                </div>
+                <div class="input-group">
+                    <label>Nagad Number</label>
+                    <input type="text" id="nagadNumInput" placeholder="018xxxxxxxx" style="width: 100%; padding: 10px; background: var(--bg-main); border: 1px solid var(--border-color); color: var(--text-main); border-radius: 6px; margin-top: 5px;">
+                </div>
+            </div>
+            <button class="btn-primary" id="saveNumbersBtn" style="margin-top: 15px; width: auto; padding: 10px 20px;">Save Numbers</button>
+        </div>
+
+        <!-- পেন্ডিং অ্যাক্টিভেশন রিকোয়েস্ট লিস্ট -->
+        <div class="card">
+            <h3>Pending Account Activation Requests</h3>
+            <div style="overflow-x: auto;">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Email</th>
+                            <th>Method</th>
+                            <th>TrxID</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="activationTableBody">
+                        <tr><td colspan="4" style="text-align: center; color: #9CA3AF;">Loading requests...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+        import { getFirestore, collection, getDocs, doc, updateDoc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+        const firebaseConfig = {
+          apiKey: "AIzaSyDsgQJgZ64-ARLqKa3vcdQpu_xVupD90W4",
+          authDomain: "apexify-72bc2.firebaseapp.com",
+          projectId: "apexify-72bc2",
+          storageBucket: "apexify-72bc2.firebasestorage.app",
+          messagingSenderId: "114061131405",
+          appId: "1:114061131405:web:ffd00b701d70c164976cc4",
+          measurementId: "G-RB6KW4S7JL"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        // অ্যাডমিন অথেন্টিকেশন চেক
+        onAuthStateChanged(auth, async (user) => {
+            if (user) {
+                const userDoc = await getDoc(doc(db, "users", user.uid));
+                if (userDoc.exists() && userDoc.data().role === "admin") {
+                    loadActivationRequests();
+                    loadSettings();
+                } else {
+                    alert("আপনার এই পেজে প্রবেশ করার অনুমতি নেই!");
+                    window.location.href = "dashboard.html";
+                }
+            } else {
+                window.location.href = "index.html";
+            }
+        });
+
+        document.getElementById("adminLogout").addEventListener("click", () => {
+            signOut(auth).then(() => { window.location.href = "index.html"; });
+        });
+
+        // অ্যাক্টিভেশন রিকোয়েস্ট লোড করা
+        async function loadActivationRequests() {
+            const tbody = document.getElementById("activationTableBody");
+            tbody.innerHTML = "";
+
+            const querySnapshot = await getDocs(collection(db, "activations"));
+            let count = 0;
+
+            querySnapshot.forEach((document) => {
+                const data = document.data();
+                if (data.status === "Pending") {
+                    count++;
+                    const tr = document.createElement("tr");
+                    tr.innerHTML = `
+                        <td>${data.email}</td>
+                        <td>${data.method}</td>
+                        <td><strong>${data.trxId}</strong></td>
+                        <td><button class="btn-approve" onclick="approveUser('${data.uid}')">Approve</button></td>
+                    `;
+                    tbody.appendChild(tr);
+                }
+            });
+
+            if (count === 0) {
+                tbody.innerHTML = `<tr><td colspan="4" style="text-align: center; color: #9CA3AF;">No pending activation requests.</td></tr>`;
+            }
+        }
+
+        // ইউজার অ্যাক্টিভ করার লজিক (সাথে রেফারেল কাউন্ট আপডেট)
+        window.approveUser = async function(uid) {
+            if (!confirm("Are you sure you want to approve this account?")) return;
+
+            try {
+                // ১. ইউজারের স্ট্যাটাস Active করা
+                const userRef = doc(db, "users", uid);
+                const userSnap = await getDoc(userRef);
+                
+                if (userSnap.exists()) {
+                    const userData = userSnap.data();
+                    await updateDoc(userRef, { accountStatus: "Active" });
+
+                    // ২. যদি তার কোনো referrer থাকে, তবে তার qualifiedReferrals +1 করা
+                    if (userData.referredBy) {
+                        const referrerRef = doc(db, "users", userData.referredBy);
+                        const referrerSnap = await getDoc(referrerRef);
+                        if (referrerSnap.exists()) {
+                            const currentRefs = referrerSnap.data().qualifiedReferrals || 0;
+                            await updateDoc(referrerRef, { qualifiedReferrals: currentRefs + 1 });
+                        }
+                    }
+                }
+
+                // ৩. অ্যাক্টিভেশন রিকোয়েস্ট ডিলিট বা Approved করা
+                await updateDoc(doc(db, "activations", uid), { status: "Approved" });
+
+                alert("Account successfully activated and referral counted!");
+                loadActivationRequests();
+            } catch (error) {
+                alert("Error: " + error.message);
+            }
+        }
+
+        // পেমেন্ট নম্বর সেটিংস সেভ করা
+        document.getElementById("saveNumbersBtn").addEventListener("click", async () => {
+            const bkash = document.getElementById("bkashNumInput").value.trim();
+            const nagad = document.getElementById("nagadNumInput").value.trim();
+
+            try {
+                await setDoc(doc(db, "settings", "paymentNumbers"), {
+                    bkash: bkash,
+                    nagad: nagad
+                }, { merge: true });
+                alert("Payment numbers updated successfully!");
+            } catch (error) {
+                alert("Error: " + error.message);
+            }
+        });
+
+        async function loadSettings() {
+            const settingsDoc = await getDoc(doc(db, "settings", "paymentNumbers"));
+            if (settingsDoc.exists()) {
+                const data = settingsDoc.data();
+                document.getElementById("bkashNumInput").value = data.bkash || "";
+                document.getElementById("nagadNumInput").value = data.nagad || "";
+            }
+        }
+    </script>
+</body>
+              </html>
+  
